@@ -1,0 +1,223 @@
+﻿header, footer, nav, section {
+    display: block;
+}
+
+
+/* Styles for basic forms
+-----------------------------------------------------------*/
+fieldset {
+    border: 1px solid #ddd;
+    padding: 0 1.4em 1.4em 1.4em;
+    margin: 0 0 1.5em 0;
+}
+
+legend {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+textarea {
+    min-height: 75px;
+}
+
+.editor-label {
+    margin: 1em 0 0 0;
+}
+
+.editor-field {
+    margin: 0.5em 0 0 0;
+}
+
+
+/* Animation */
+/*.animate.ng-enter, 
+.animate.ng-leave
+{ 
+    -webkit-transition: all ease-in-out 1.15s;
+    -moz-transition: all ease-in-out 1.15s;
+    -o-transition: all ease-in-out 1.15s;
+    transition: all ease-in-out 1.15s;
+    position: relative;
+    display: block;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+
+    -webkit-animation-delay: 0.2s;
+	-moz-animation-delay: 0.2s;
+	-o-animation-delay: 0.2s;
+	-ms-animation-delay: 0.2s;
+	animation-delay: 0.2s;
+} 
+ 
+.animate.ng-leave.ng-leave-active,
+.animate.ng-enter {
+    opacity: 0;
+    width: 0px;
+    height: 0px;
+}
+ 
+.animate.ng-enter.ng-enter-active, 
+.animate.ng-leave {
+    opacity: 1;
+    width: 100%;
+    height: 100%;
+}*/
+
+/* ------------------------------------------- */
+/* Slide Down
+/* ------------------------------------------- */
+.slide-down {
+    -webkit-transition: all 0 cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    -moz-transition: all 0 cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    -ms-transition: all 0 cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    -o-transition: all 0 cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: all 0 cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    -webkit-transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    -moz-transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    -ms-transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    -o-transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+    .slide-down.ng-enter {
+        transform: translateY(-60px);
+        -ms-transform: translateY(-60px);
+        -webkit-transform: translateY(-60px);
+        transition-duration: 1s;
+        -webkit-transition-duration: 1s;
+        opacity: 0;
+    }
+
+    .slide-down.ng-enter-active {
+        transform: translateY(0);
+        -ms-transform: translateY(0);
+        -webkit-transform: translateY(0);
+        opacity: 1;
+    }
+
+    .slide-down.ng-leave {
+        transform: translateY(0);
+        -ms-transform: translateY(0);
+        -webkit-transform: translateY(0);
+        transition-duration: 1s;
+        -webkit-transition-duration: 1s;
+        opacity: 1;
+    }
+
+    .slide-down.ng-leave-active {
+        transform: translateY(-60px);
+        -ms-transform: translateY(-60px);
+        -webkit-transform: translateY(-60px);
+        opacity: 0;
+    }
+
+    .slide-down.ng-hide-add {
+        transform: translateY(0);
+        -ms-transform: translateY(0);
+        -webkit-transform: translateY(0);
+        transition-duration: 1s;
+        -webkit-transition-duration: 1s;
+        opacity: 1;
+    }
+
+        .slide-down.ng-hide-add.ng-hide-add-active {
+            transform: translateY(-60px);
+            -ms-transform: translateY(-60px);
+            -webkit-transform: translateY(-60px);
+            opacity: 0;
+        }
+
+    .slide-down.ng-hide-remove {
+        transform: translateY(-60px);
+        -ms-transform: translateY(-60px);
+        -webkit-transform: translateY(-60px);
+        transition-duration: 1s;
+        -webkit-transition-duration: 1s;
+        display: block !important;
+        opacity: 0;
+    }
+
+        .slide-down.ng-hide-remove.ng-hide-remove-active {
+            transform: translateY(0);
+            -ms-transform: translateY(0);
+            -webkit-transform: translateY(0);
+            opacity: 1;
+        }
+
+/*----------------------------------------------*/
+.mapperInsta-all {
+    clear: both;
+}
+
+    .mapperInsta-all .insta-feed-image {
+        float: left;
+        width: 35%;
+    }
+
+    .mapperInsta-all .insta-feeds {
+        float: left;
+        width: 65%;
+        padding-right: 5px;
+    }
+
+
+/* Maps page style */
+.map-acc .panel-title img.icon {
+    height: 30px;
+    width: 30px;
+}
+
+.map-acc .panel-heading {
+    padding: 5px 10px;
+    height: auto;
+}
+
+.category > div > .panel-body {
+    padding: 2px;
+}
+
+#lefter .map-acc ul li a {
+    text-decoration: none;
+}
+
+#lefter .map-acc .panel-heading a div:hover, .map-acc ul li a div:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.map-acc img.icon {
+    width: 25px;
+    height: 25px;
+}
+
+.map-acc img.attr {
+    float: right;
+    height: 30px;
+    width: auto;
+}
+
+.map-acc .text {
+    margin: 3px 0px;
+}
+
+.map-acc .panel-group {
+    margin-bottom: 5px;
+}
+
+    .map-acc .panel-group .panel-heading .panel-title-text {
+        padding: 6px 15px;
+        height: auto;
+    }
+/* End of Maps page style*/
+
+/* please don't override general classes for page specific layout.e.g. setting height in generic may afect all other pages */
+.dartAcc .panel-group .panel-heading {
+    height: auto;
+    padding: 10px 15px;
+}
+
+    .dartAcc .panel-group .panel-heading a {
+        display: block;
+        width: 100%;
+    }

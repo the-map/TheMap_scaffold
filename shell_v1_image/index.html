@@ -1,0 +1,213 @@
+<html class="js flexbox flexboxlegacy canvas canvastext webgl no-touch geolocation postmessage websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers applicationcache svg inlinesvg smil svgclippaths ng-scope"><head><style type="text/css">.ng-animate.item:not(.left):not(.right){-webkit-transition:0s ease-in-out left;transition:0s ease-in-out left}</style><style type="text/css">@charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\:form{display:block;}</style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta property="og:title">
+    <meta property="og:description">
+    <meta property="og:image">
+	<base href="../shell_v1_image/">
+    <link rel="icon" type="image/png" href="images/MapGreen_small.png">
+    <title>TheMap</title>
+	
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.2.3/leaflet.draw.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/handsontable/0.20.2/handsontable.full.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.0/spectrum.min.css">
+    <link rel="stylesheet" href="Content/kendo/kendo.common.min.css">
+    <link rel="stylesheet" href="Content/kendo/kendo.metro.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/bootstrap-tokenfield.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angularjs-toaster/1.0.0/toaster.min.css">
+    
+    <link href="http://vjs.zencdn.net/4.12/video-js.css" rel="stylesheet">
+    
+    
+
+    <link href="Content/site.css" rel="stylesheet">
+	<link href="css/site_next.css" rel="stylesheet">
+	<link href="css/your.css" rel="stylesheet">
+	<link href="css/site.css" rel="stylesheet">
+	<link href="Content/token-input/token-input.css" rel="stylesheet">
+	<link href="Content/token-input/token-input-facebook.css" rel="stylesheet">
+	<link href="Content/medium-editor.min.css" rel="stylesheet">
+	<link href="Content/medium-editor-insert-plugin.css" rel="stylesheet">
+	<link href="css/leaflet-openweathermap.css" rel="stylesheet">
+	<link href="css/leaflet.label.css" rel="stylesheet">
+	<link href="css/Leaflet.vector-markers.css" rel="stylesheet">
+	
+	
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
+	<script src="js/canvg.js"></script>
+	<script src="js/leaflet.easyPrint.js"></script>
+<script src="js/html2canvas.js"></script>
+	
+	</head>
+<body>
+    
+
+<div id="fb-root"></div>
+<div ng-controller="myC" id="myC" data-ng-init="initialize()" style="height:100%;">
+    <toaster-container toaster-options="{'time-out': 3000, 'close-button':true}"></toaster-container>
+	<nav class="navbar navbar-default" role="navigation">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+
+				<a class="navbar-brand dark" href="/#"><img src="images/logos/MapIcon40.png" /></a>
+
+			</div>
+
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li class="dark"><div></div></li>
+					<li class="dark"><a><i class="fa fa-map-o"></i><span ng-bind="mapCenterLatLng" class="ng-binding">32.79, -96.79</span></a></li>
+					<li><a href="/views">Views</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li>
+						<div class="social-media">
+
+						</div>
+					</li>
+				   
+					<li class="dark">
+						<button data-toggle="dropdown" class="navbar-toggle hamburger" type="button" aria-haspopup="true" role="button" aria-expanded="false">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+						<ul class="dropdown-menu" role="menu">
+							<li><a href="javascript:void(0)" ng-click="updateLeafMapTheme('WorldImagery')">World Imagery</a></li>
+							<li><a href="javascript:void(0)" ng-click="updateLeafMapTheme('NormalDayGrey')">Normal Day</a></li>
+							<li><a href="javascript:void(0)" ng-click="updateLeafMapTheme('OpenStreet')">Open Street</a></li>
+							<li><a href="javascript:void(0)" ng-click="updateLeafMapTheme('NormalNight')">Normal Night</a></li>
+							<li><a href="javascript:void(0)" ng-click="updateLeafMapTheme('DarkMatter')">Dark Matter</a></li>
+							<li><a href="javascript:void(0)" ng-click="updateLeafMapTheme('LightGrayCanvas')">Light Gray Canvas</a></li>
+							<li><a href="javascript:void(0)" ng-click="updateLeafMapTheme('PositronNoLabels')">Positron No Labels</a></li>
+						</ul>
+					</li>
+					<li><a href="/auth/register" ng-hide="IsLoggedIn"><i class="fa fa-sign-in"></i>&nbsp; <span>Sign In</span></a></li>
+
+				</ul>
+			</div><!-- /.navbar-collapse -->
+		</div><!-- /.container-fluid -->
+	</nav>
+	 <div id="rower" class="row" >
+        <div id="pageWrapper">
+            <div id="lefter" class="col-lg-5 col-md-5 col-sm-5" style="height: 100%; overflow: auto;">
+<button id="print-map-to-image">Print Map to Image</button>
+
+<img id="print-image" height="400" width="400"/>
+            </div>
+            <div id="leaf-map" class="col-lg-7 mapStyle col-md-7 col-sm-7">
+
+            </div>
+        </div><!--rower-->
+    </div><!--container-->
+</div><!--pageWrapper-->
+     <script>
+        $('ul.nav > li').click(function (e) {
+            $('ul.nav > li').removeClass('active');
+            $(this).addClass('active');
+        });
+
+        $("#map-canvas").height('100%');
+        $("#lefter").height('100%');
+		
+		$(document).ready(function(){
+			var map = L.map('leaf-map', {
+					zoomControl: false
+				});
+
+			map.setView([32.785903, -96.795903], 12);
+			
+			var mapboxTiles = L.tileLayer('http://{s}.{base}.maps.cit.api.here.com/maptile/2.1/maptile/{mapID}/normal.day.grey/{z}/{x}/{y}/256/png8?app_id={app_id}&app_code={app_code}', {
+						attribution: 'Map &copy; 1987-2014 <a href="http://developer.here.com">HERE</a>',
+						subdomains: '1234',
+						mapID: 'newest',
+						//app_id: 'Y8m9dK2brESDPGJPdrvs',
+						//app_code: 'dq2MYIvjAotR8tHvY8Q_Dg',
+						app_id: 'lZjh1sncXfyS5qTsuaPW',
+						app_code: 'oV-bfHNn2rjbHt64jJ0TtA',
+						base: 'base',
+						minZoom: 0,
+						maxZoom: 20
+					});
+			map.addLayer(mapboxTiles);
+            S
+            L.easyPrint().addTo(map);
+
+		});
+
+		
+			  var printMap = function (downloadFileName) {
+				  
+
+var  targetElem = $("#leaf-map");
+               
+                var elements = $("#leaf-map").find('svg').map(function () {
+                    var svg = $(this);
+                    var canvas = document.createElement('canvas');
+
+                    canvg(canvas, svg[0].outerHTML);
+                    svg.replaceWith(canvas);
+                    return {
+                        svg: svg,
+                        canvas: canvas
+                    };
+                });
+
+                 
+
+                html2canvas($("#leaf-map"), {
+                    onrendered: function (canvas) {
+                        var img = document.createElement('img');
+                        var dataUrl = canvas.toDataURL('image/png');
+                        img.setAttribute("src", dataUrl);
+                        if (downloadFileName) {
+                            var a = document.createElement('a');
+                            a.setAttribute("href", dataUrl);
+                            a.setAttribute("download", downloadFileName);
+                            document.body.appendChild(a);
+                            a.click();
+                        }
+                        elements.each(function () {
+                            $(this.canvas).replaceWith(this.svg);
+                        });
+                        
+						$('#print-image').attr('src',img.currentSrc);
+						return (img);
+                    },
+					useCORS: true,
+                    logging: true
+                });
+                return;
+            };
+
+			$('#print-map-to-image').click(function(){
+				setTimeout(function(){
+
+				var img = printMap();
+				setTimeout(function(){
+
+				console.log(img);
+
+				if (img) {
+					$('#print-image').attr('src',img.currentSrc);                        
+				};
+								}, 3000);
+
+				}, 3000);				
+			});
+    </script>
+</body></html>
