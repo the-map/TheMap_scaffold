@@ -1,5 +1,54 @@
  var app = angular.module('cardApp', ['toaster']);
- 
+ app.run(['$rootScope',function($rootScope){
+	  $rootScope.guid = function () {
+
+            function s4() {
+                return Math.floor((1 + Math.random()) * 0x10000)
+						.toString(16)
+						.substring(1);
+            }
+
+            return s4() + s4() + s4();
+        };
+
+        $rootScope.getParamFromURL = function (url, name) {
+
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+					results = regex.exec(url);
+            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        };
+
+
+        $rootScope.parseXml = function (text) {
+            var parseXml;
+
+            if (window.DOMParser) {
+                parseXml = function (xmlStr) {
+                    return (new window.DOMParser()).parseFromString(xmlStr, "text/xml");
+                };
+            } else if (typeof window.ActiveXObject != "undefined" && new window.ActiveXObject("Microsoft.XMLDOM")) {
+                parseXml = function (xmlStr) {
+                    var xmlDoc = new window.ActiveXObject("Microsoft.XMLDOM");
+                    xmlDoc.async = "false";
+                    xmlDoc.loadXML(xmlStr);
+                    return xmlDoc;
+                };
+            } else {
+                parseXml = function () { return null; };
+            }
+
+            return parseXml(text);
+        };
+
+        $rootScope.url2domain = function (data) {
+            var a = document.createElement('a');
+            a.href = data;
+            return a.hostname;
+        };
+
+
+ }]);
   app.controller('cardsController', [ '$scope','$timeout','toaster', function ( $scope,$timeout,toaster) {
     $scope.ArticleCards=[];
 
@@ -47,11 +96,11 @@
 			}]);
 
 
-app.directive('tmTumblr', ['$timeout', 'toaster','$sce', function ($timeout, toaster,$sce) {
+app.directive('tmTumblr', ['$timeout', 'toaster','$sce','$rootScope', function ($timeout, toaster,$sce,$rootScope) {
 
         return {
             restrict: 'AE',
-            templateUrl:$sce.trustAsResourceUrl('http://themapstaging.azurewebsites.net/app/core/directives/tumblr.html'),
+            template:tumblrTemplate,
             scope: {
                 'tumblrHtmls': '=tumblrHtmls',
                 'imageDropperUrl': '=imageDropperUrl',
@@ -138,12 +187,12 @@ app.directive('tmTumblr', ['$timeout', 'toaster','$sce', function ($timeout, toa
                         url: scope.cardHtml.URL,
                         type: 'GET',
                         success: function (res) {
-                            var xml = scope.parseXml(res.responseText);
+                            var xml = $rootScope.parseXml(res.responseText);
                             var dom = $(xml);
                             var ogTitle = dom.find("meta[property='og\:title']").attr("content");
                             var ogDesc = dom.find("meta[property='og:\description']").attr("content");
                             var ogImage = dom.find("meta[property='og:\image']").attr("content");
-                            var domain = scope.url2domain(scope.cardHtml.URL);
+                            var domain = $rootScope.url2domain(scope.cardHtml.URL);
                             ogTitle = $('<div></div>').html(ogTitle).text();
                             ogDesc = $('<div></div>').html(ogDesc).text();
                             var title = dom.find("title").text();
@@ -199,7 +248,7 @@ app.directive('tmTumblr', ['$timeout', 'toaster','$sce', function ($timeout, toa
 
         return {
             restrict: 'AE',
-            templateUrl: $sce.trustAsResourceUrl('http://themapstaging.azurewebsites.net/app/core/directives/tumblrview.html'),
+            template: tumblrViewTemplate,
             scope: {
                 'tumblrHtmls': '=tumblrHtmls',
                 'tumblrEditable': '=tumblrEditable'
@@ -250,7 +299,7 @@ app.directive('tmTumblr', ['$timeout', 'toaster','$sce', function ($timeout, toa
     app.directive('facebookPost', ['$timeout','$sce', function ($timeout,$sce) {
         return {
             restrict: 'AE',
-            templateUrl: $sce.trustAsResourceUrl('http://themapstaging.azurewebsites.net/app/core/directives/facebookpost.html'),
+            templateUrl: fbPost,
             scope: {
                 postUrl: '@'
             },
@@ -278,7 +327,7 @@ app.directive('tmTumblr', ['$timeout', 'toaster','$sce', function ($timeout, toa
     app.directive('twitterPost', ['$http', '$timeout','$sce', function ($http, $timeout,$sce) {
         return {
             restrict: 'AE',
-            templateUrl: $sce.trustAsResourceUrl('http://themapstaging.azurewebsites.net/app/core/directives/twitterpost.html'),
+            template: '<div class="twitter-post"></div><div id="container1"></div>',
             scope: {
                 tweetPostUrl: '@'
             },
@@ -314,4 +363,73 @@ app.directive('tmTumblr', ['$timeout', 'toaster','$sce', function ($timeout, toa
                 catch (ex) { console.log(ex); }
             }
         }
+    }]);
+	
+	    app.directive('imageUpload', ['$timeout', '$http', 'toaster', function ($timeout, $http, toaster) {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            scope: {
+                options: '=dropperOptions'
+            },
+            link: function (scope, ele, attrs, ngModel) {
+                scope.options.label = scope.options.label || "Drop File/Click here";
+                scope.options.maxUploadSize = scope.options.maxUploadSize || 10; /*MB*/
+
+                $(ele).dropper({ label: scope.options.label }).on("start.dropper", function (e, files) {
+
+                    if (files[0]) {
+                        var currentFile = files[0].file;
+                        if (((currentFile.size / 1024) / 1024) > scope.options.maxUploadSize) {
+                            $timeout(function () {
+                                toaster.pop('error', "TheMap Says:", "Max file size of " + maxUploadSize + "MB exceeded.", 3000);
+                            }, 1);
+
+                            return;
+                        }
+
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            $timeout(function () {
+                                toaster.pop('wait', "TheMap Says:", "Uploading file...", 0);
+                            }, 1);
+
+                            var dataToSave = {
+                                "Data": e.target.result,
+                                "Name": currentFile.name,
+                                "Type": currentFile.type
+                            };
+                            var req = {
+                                method: 'POST',
+                                url: scope.options.postUrl,
+                                data: dataToSave
+                            };
+
+                            $http(req).
+							success(function (response) {
+							    toaster.clear();
+							    $timeout(function () {
+							        ngModel.$setViewValue(response.location);
+							    }, 1);
+
+							    if (scope.options.onSuccess) {
+							        scope.options.onSuccess(response.location, currentFile);
+							    }
+							}).
+							error(function () {
+							    toaster.clear();
+							    $timeout(function () {
+							        ngModel.$setViewValue(e.target.result);
+							    }, 1);
+							    if (scope.options.onSuccess) {
+							        scope.options.onSuccess(e.target.result, currentFile, true);
+							    }
+							});
+                        };
+
+                        reader.readAsDataURL(files[0].file);
+                    }
+                });
+            }
+        };
     }]);

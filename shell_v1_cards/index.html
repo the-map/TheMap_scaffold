@@ -46,6 +46,9 @@
 	
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.0/angular.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script src="js/jquery-cross-domain-ajax.js"></script>
+	<script src="js/dropper.min.js"></script>
+	<script src="js/templates.js"></script>
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/angularjs-toaster/1.0.0/toaster.min.js"></script>
 
@@ -124,19 +127,9 @@
                Add Card
                 <i  class="fa fa-times-circle pull-right"></i>
             </header>
-                    <div>
-                        <div style="padding:0 10px;">
-                            
-                            <div ng-show="true">
-                                <div class="">
-                                    
-                                    <div style="overflow: scroll;height: 93%;width: 100%;">
-                                        <tm-tumblr tumblr-htmls="articleCard.ArticleCardHtmls" parent-id="guid()" image-dropper-url="'http://themapapi.azurewebsites.net/Api/Article/AddImage'" file-dropper-url="'http://themapapi.azurewebsites.net/Api/Article/AddImage'"></tm-tumblr>
-                                    </div>
-                                </div>
-                               
-                            </div>
-                        </div>
+                    <div class="overlay-body">
+                       <tm-tumblr tumblr-htmls="articleCard.ArticleCardHtmls" parent-id="guid()" image-dropper-url="'http://themapapi.azurewebsites.net/Api/Article/AddImage'" file-dropper-url="'http://themapapi.azurewebsites.net/Api/Article/AddImage'"></tm-tumblr>
+
                     </div>
                     
                
