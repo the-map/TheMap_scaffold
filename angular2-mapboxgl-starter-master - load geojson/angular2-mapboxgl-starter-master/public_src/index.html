@@ -6,8 +6,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <script src="https://d3js.org/d3.v3.min.js"></script>
-    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.12.0/mapbox-gl.css' rel='stylesheet' />
-    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.12.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.26.0/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.26.0/mapbox-gl.js'></script>
     <style>
         html,
         body,
@@ -38,7 +38,56 @@
 </head>
 
 <body>
-    <app>Loading...</app>
+    
+<style>
+.mapboxgl-popup {
+    max-width: 400px;
+    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+}
+</style>
+<div id='map'></div>
+<script>
+mapboxgl.accessToken = 'pk.eyJ1IjoidGhlbWFwIiwiYSI6ImNpdGxvb2d1NDAwYngyem1wd2puN3U5MGsifQ.zPcEjzqrmYFvLsCFivMxkg';
+var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v9',
+    center: [-96.79,32.79],
+    zoom:14
+});
+
+map.on('load', function () {
+    // Add a GeoJSON source containing the state polygons.
+    map.addSource('polygondata', {
+        'type': 'geojson',
+        'data': {"type":"FeatureCollection","features":[{"type":"Feature","properties":{"encoded":false,"color":"#FF0000","theMapID":"2eeddd98b890","fillColor":"#FF0000","weight":3.3,"fillOpacity":0.2,"opacity":0.45,"name":"test"},"geometry":{"type":"Polygon","coordinates":[[[-96.80319786071777,32.79766448989801],[-96.78929328918457,32.802642583608026],[-96.78028106689453,32.791243058853645],[-96.79324150085449,32.78258421551915],[-96.81238174438477,32.78280069687505],[-96.81246757507323,32.792686117458935],[-96.80319786071777,32.79766448989801]]]}}]}
+    });
+
+    // Add a layer showing the state polygons.
+    map.addLayer({
+        'id': 'polygondata-layer',
+        'type': 'fill',
+        'source': 'polygondata',
+        'paint': {
+            'fill-color': 'rgba(200, 100, 240, 0.4)',
+            'fill-outline-color': 'rgba(200, 100, 240, 1)'
+        }
+    });
+});
+map.on('click', function (e) {
+   var features = map.queryRenderedFeatures(e.point, { layers: ['polygondata-layer'] });
+    if (!features.length) {
+        return;
+    }
+
+    var feature = features[0];
+ var popup = new mapboxgl.Popup()
+  .setLngLat(e.lngLat)
+  .setHTML(feature.properties.name)
+  .addTo(map);
+     
+});
+
+</script>
 </body>
 
 </html>
