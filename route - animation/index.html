@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title></title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.26.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.26.0/mapbox-gl.css' rel='stylesheet' />
+     <script src="http://d3js.org/d3.v3.min.js" type="text/javascript"></script>
+    <style>
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+    </style>
+</head>
+<body>
+
+<div id='map'></div>
+<script>
+
+index = 0;
+
+mapboxgl.accessToken = 'pk.eyJ1IjoidGhlbWFwIiwiYSI6ImNpdGxvb2d1NDAwYngyem1wd2puN3U5MGsifQ.zPcEjzqrmYFvLsCFivMxkg';
+var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v9',
+    center: [-96.562236, 32.904353],
+    zoom: 9
+});
+
+d3.json("points.geojson", function(collection) {
+    cordinates = collection.features[0].geometry.coordinates;
+});
+
+function pointOnCircle(angle) {
+    return {
+        "type": "Point",
+        "coordinates": getCordinates()
+    };
+}
+
+function getCordinates(){
+    return cordinates[index];
+};
+
+map.on('load', function () {
+    // Add a source and layer displaying a point which will be animated in a circle.
+    map.addSource('point', {
+        "type": "geojson",
+        "data": pointOnCircle(0)
+    });
+
+    map.addLayer({
+        "id": "point",
+        "source": "point",
+        "type": "circle",
+        "paint": {
+            "circle-radius": 10,
+            "circle-color": "#007cbf"
+        }
+    });
+
+    function animateMarker() {
+        index = index + 1;
+        // Update the data to a new position based on the animation timestamp. The
+        // divisor in the expression `timestamp / 1000` controls the animation speed.
+        map.getSource('point').setData(pointOnCircle(10000));
+
+        // Request the next frame of the animation.
+        requestAnimationFrame(animateMarker);
+    }
+
+    // Start the animation.
+    animateMarker();
+});
+</script>
+
+</body>
+</html>
