@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<body>
+<style>
+
+path {
+  fill: none;
+  stroke: #000;
+  stroke-width: 3px;
+}
+
+circle {
+  fill: steelblue;
+  stroke: #fff;
+  stroke-width: 3px;
+}
+
+</style>
+<script src="//d3js.org/d3.v3.min.js"></script>
+<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.12.0/mapbox-gl.css' rel='stylesheet' />
+<style>
+    
+html, body, #wrapper {
+    width: 100%;
+    height: 100%;
+	padding: 0px;
+	margin: 0px;
+}
+#map { 
+  position:relative; 
+  width: 100%;
+  height: 100%;
+  margin: auto auto;
+}
+svg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+.hidden {
+	display: none;
+}
+</style>
+</head>
+
+<body>
+<div id="wrapper">
+    <div id="map"></div>    
+</div>    
+
+<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.12.0/mapbox-gl.js'></script>
+<script>
+d3.json("points.geojson", function(err, data) {
+    mapboxgl.accessToken = 'pk.eyJ1IjoidGhlbWFwIiwiYSI6ImNpdGxvb2d1NDAwYngyem1wd2puN3U5MGsifQ.zPcEjzqrmYFvLsCFivMxkg';
+
+    //Setup mapbox-gl map
+    var map = new mapboxgl.Map({
+        container: 'map', // container id
+        style: 'mapbox://styles/mapbox/streets-v8',
+        center: [-96.562236, 32.904353],
+        pitch:60 , // pitch in degrees
+        bearing: -60, // bearing in degrees
+        zoom: 11,
+    });
+
+    var container = map.getCanvasContainer();
+    var svg = d3.select(container).append("svg");
+
+
+    map.on("viewreset", function() {
+        transition();
+    });
+
+    map.on("move", function() {
+        transition();
+    });
+
+    map.on('load', function() {
+        transition();
+    });
+
+
+    function linefunction(coordinates, isArray) {
+        var cords = [];
+        var cord = {};
+        for (var i = 0; i < coordinates.length; i++) {
+            var pt = map.project(new mapboxgl.LngLat(coordinates[i][0], coordinates[i][1]));
+            cords.push([pt.x, pt.y]);
+        }
+        return isArray ? [cords] : cords;
+    }
+
+
+    function transition() {
+        svg.selectAll("*").remove();
+
+        var path = svg.append("path")
+            .data(linefunction(data.features[0].geometry.coordinates, 1))
+            .attr("d", d3.svg.line()
+                .tension(0) // Catmull–Rom
+                .interpolate("cardinal"));
+
+        svg.selectAll(".point")
+            .data(linefunction(data.features[0].geometry.coordinates, 1))
+            .enter().append("circle")
+            .attr("r", 10);
+
+        var circle = svg.append("circle")
+            .attr("r", 20)
+            .attr("transform", "translate(" + linefunction([data.features[0].geometry.coordinates[0]]) + ")");
+
+        circle.transition()
+            .duration(5000)
+            .attrTween("transform", translateAlong(path.node()));
+
+    }
+
+    // Returns an attrTween for translating along the specified path element.
+    function translateAlong(path) {
+        var l = path.getTotalLength();
+        return function(d, i, a) {
+            return function(t) {
+                var p = path.getPointAtLength(t * l);
+                return "translate(" + p.x + "," + p.y + ")";
+            };
+        };
+    }
+});
+</script>
