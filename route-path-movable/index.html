@@ -104,18 +104,19 @@
 
             function update() {
                 featureElement.attr("d", path);
+                
                 circle.attr("transform", "translate(" + linefunction([data1.features[0].geometry.coordinates[0]]) + ")")
 
             }
 
-            transition(featureElement);
+           transition(featureElement);
 
             function transition(path) {
                 path.transition()
-                    .duration(6500).ease("linear")
+                    .duration(10500).ease("linear")
                     .attrTween("stroke-dasharray", tweenDash);
             }
-            var iii = 0;
+            
 
             function tweenDash() {
 
@@ -138,7 +139,7 @@
                        
                     // });
                     marker.attr("transform", "translate(" + p.x + "," + p.y + ")"); //move marker
-                    console.log(i(t));
+                    
                     return i(t);
                 }
             }
