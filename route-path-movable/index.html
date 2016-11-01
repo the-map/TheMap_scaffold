@@ -129,15 +129,17 @@
 
                     var p = featureElement.node().getPointAtLength(t * l);
 
-                    // map.flyTo({
-                    //     center: data1.features[0].geometry.coordinates[Math.floor(t * l)],
+                        console.log([t,l]);
+                    map.flyTo({
 
-                    //     bearing: -60,
-                    //     pitch: 60,
-                    //     zoom: 11
+                        center: data1.features[0].geometry.coordinates[Math.floor(t * l)],
+
+                        bearing: -60,
+                        pitch: 60,
+                        zoom: 11
 
                        
-                    // });
+                    });
                     marker.attr("transform", "translate(" + p.x + "," + p.y + ")"); //move marker
                     
                     return i(t);
