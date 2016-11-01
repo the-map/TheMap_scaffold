@@ -63,96 +63,103 @@
             zoom: 11
         });
 
+            map.on('load', function() {
+        go();
+    });
+
+        function go() {
 
 
-        var container = map.getCanvasContainer();
-        var svg = d3.select(container).append("svg");
+            var container = map.getCanvasContainer();
+            var svg = d3.select(container).append("svg");
 
-        var transform = d3.geo.transform({
-            point: projectPoint
-        });
-        var path = d3.geo.path().projection(transform);
+            var transform = d3.geo.transform({
+                point: projectPoint
+            });
+            var path = d3.geo.path().projection(transform);
 
-        var featureElement = svg.selectAll("path")
-            .data(data1.features)
-            .enter()
-            .append("path")
-            .attr({
-                "stroke": "black",
+            var featureElement = svg.selectAll("path")
+                .data(data1.features)
+                .enter()
+                .append("path")
+                .attr({
+                    "stroke": "black",
 
-                "fill-opacity": 0.0
+                    "fill-opacity": 0.0
+                });
+
+            function linefunction(coordinates, isArray) {
+                var cords = [];
+                var cord = {};
+                for (var i = 0; i < coordinates.length; i++) {
+                    var pt = map.project(new mapboxgl.LngLat(coordinates[i][0], coordinates[i][1]));
+                    cords.push([pt.x, pt.y]);
+                }
+                return isArray ? [cords] : cords;
+            }
+
+            var circle = svg.append("circle")
+                .attr("r", 20)
+                .attr("transform", "translate(" + linefunction([data1.features[0].geometry.coordinates[0]]) + ")")
+
+            function update() {
+                featureElement.attr("d", path);
+                circle.attr("transform", "translate(" + linefunction([data1.features[0].geometry.coordinates[0]]) + ")")
+
+            }
+
+            transition(featureElement);
+
+            function transition(path) {
+                path.transition()
+                    .duration(6500).ease("linear")
+                    .attrTween("stroke-dasharray", tweenDash);
+            }
+            var iii = 0;
+
+            function tweenDash() {
+
+                var l = featureElement.node().getTotalLength();
+
+                var i = d3.interpolateString("0," + l, l + "," + l); // interpolation of stroke-dasharray style attr
+                return function(t) {
+                    var marker = d3.select("circle");
+
+                    var p = featureElement.node().getPointAtLength(t * l);
+
+                    map.flyTo({
+                        center: data1.features[0].geometry.coordinates[Math.floor(t * l)],
+
+                        bearing: -60,
+                        pitch: 60,
+                        zoom: 11,
+
+                        easing: function(t) {
+                            return t;
+                        }
+                    });
+                    marker.attr("transform", "translate(" + p.x + "," + p.y + ")"); //move marker
+                    return i(t);
+                }
+            }
+
+            //
+            //map.on("viewreset", update)
+            map.on("zoom", update);
+            map.on("move", function() {
+                update();
             });
 
-        function linefunction(coordinates, isArray) {
-            var cords = [];
-            var cord = {};
-            for (var i = 0; i < coordinates.length; i++) {
-                var pt = map.project(new mapboxgl.LngLat(coordinates[i][0], coordinates[i][1]));
-                cords.push([pt.x, pt.y]);
+
+
+            update()
+
+            function projectPoint(lon, lat) {
+                var point = map.project(new mapboxgl.LngLat(lon, lat));
+                this.stream.point(point.x, point.y);
             }
-            return isArray ? [cords] : cords;
-        }
 
-        var circle = svg.append("circle")
-            .attr("r", 20)
-            .attr("transform", "translate(" + linefunction([data1.features[0].geometry.coordinates[0]]) + ")")
-
-        function update() {
-            featureElement.attr("d", path);
-            circle.attr("transform", "translate(" + linefunction([data1.features[0].geometry.coordinates[0]]) + ")")
-
-        }
-
-        transition(featureElement);
-
-        function transition(path) {
-            path.transition()
-                .duration(10000).ease("linear")
-                .attrTween("stroke-dasharray", tweenDash);
-        }
-        var iii=0;
-        function tweenDash() {
-            
-            var l = featureElement.node().getTotalLength();
-
-            var i = d3.interpolateString("0," + l, l + "," + l); // interpolation of stroke-dasharray style attr
-            return function(t) {
-                var marker = d3.select("circle");
-                
-                var p = featureElement.node().getPointAtLength(t * l);
-                
-                map.flyTo({
-                    center: data1.features[0].geometry.coordinates[Math.floor(t*l)],
-                    
-                    bearing: -60,
-                    pitch: 60,
-                    zoom:11,
-                   
-                    easing: function(t) {
-                        return t;
-                    }
-                });
-                marker.attr("transform", "translate(" + p.x + "," + p.y + ")"); //move marker
-                return i(t);
-            }
-        }
-
-        //
-        map.on("viewreset", update)
-        map.on("zoom",update);
-        map.on("move", function() {
-            update();
-        });
-
-
-
-        update()
-
-        function projectPoint(lon, lat) {
-            var point = map.project(new mapboxgl.LngLat(lon, lat));
-            this.stream.point(point.x, point.y);
-        }
-
+        };
     });
     </script>
 </body>
