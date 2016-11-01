@@ -60,7 +60,7 @@
             center: [-96.562236, 32.904353],
             pitch: 60, // pitch in degrees
             bearing: -60, // bearing in degrees
-            zoom: 11
+            zoom: 10
         });
 
             map.on('load', function() {
@@ -120,26 +120,29 @@
 
             function tweenDash() {
 
-                var l = featureElement.node().getTotalLength();
-
-                var i = d3.interpolateString("0," + l, l + "," + l); // interpolation of stroke-dasharray style attr
+                    var l = featureElement.node().getTotalLength();
+                    var i = d3.interpolateString("0," + l, l + "," + l); // interpolation of stroke-dasharray style attr
+                
                 
                 return function(t) {
+                    
                     var marker = d3.select("circle");
 
                     var p = featureElement.node().getPointAtLength(t * l);
 
-                        console.log([t,l]);
+                        
+                  //  console.log(p)
                     map.flyTo({
 
                         center: data1.features[0].geometry.coordinates[Math.floor(t * l)],
 
                         bearing: -60,
                         pitch: 60,
-                        zoom: 11
+                        zoom: 10
 
                        
                     });
+                    
                     marker.attr("transform", "translate(" + p.x + "," + p.y + ")"); //move marker
                     
                     return i(t);
